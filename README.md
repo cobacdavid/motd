@@ -3,9 +3,9 @@
 Retrieve famous "Mathematicians Of The Day" from 
 [http://mathshistory.st-andrews.ac.uk/Day_files/Year.html](http://mathshistory.st-andrews.ac.uk/Day_files/Year.html)
 
-Disclaimer: This is not an official package!
+Disclaimer: This package is not supported by the University of St-Andrews. This is not an official package!
 
-## 0.1
+## 0.1.2
 
 ### Usage as a library
 
@@ -16,7 +16,7 @@ Disclaimer: This is not an official package!
 >>> motd.motd()
 <motd.motd.motd object at 0x7fd2675eb550>
 >>> motd.motd().sortie()
-'{"30/12": [{"annee": 1869, "prenom": null, "nom": null, "type": "naissance"}, {"annee": null, "prenom": "Emilie", "nom": "MARTIN", "type": "naissance"}, {"annee": 1897, "prenom": "Stanis\\u0142aw", "nom": "SAKS", "type": "naissance"}, {"annee": 1691, "prenom": "Robert", "nom": "BOYLE", "type": "mort"}, {"annee": 1932, "prenom": "Eliakim", "nom": "MOORE", "type": "mort"}, {"annee": 1947, "prenom": "Alfred North", "nom": "WHITEHEAD", "type": "mort"}, {"annee": 1956, "prenom": "Heinrich", "nom": "SCHOLZ", "type": "mort"}, {"annee": 1978, "prenom": "Mark Aronovich", "nom": "NAIMARK", "type": "mort"}, {"annee": 1982, "prenom": "Philip", "nom": "HALL", "type": "mort"}]}'
+'{"30/12": [{"annee": 1869, "prenom": "Emilie", "nom": "MARTIN", "type": "naissance"}, {"annee": 1897, "prenom": "Stanis\\u0142aw", "nom": "SAKS", "type": "naissance"}, {"annee": 1691, "prenom": "Robert", "nom": "BOYLE", "type": "mort"}, {"annee": 1932, "prenom": "Eliakim", "nom": "MOORE", "type": "mort"}, {"annee": 1947, "prenom": "Alfred North", "nom": "WHITEHEAD", "type": "mort"}, {"annee": 1956, "prenom": "Heinrich", "nom": "SCHOLZ", "type": "mort"}, {"annee": 1978, "prenom": "Mark Aronovich", "nom": "NAIMARK", "type": "mort"}, {"annee": 1982, "prenom": "Philip", "nom": "HALL", "type": "mort"}]}'
 >>> 
 
 ```
@@ -36,7 +36,7 @@ The constructor admits two optional arguments:
 
 >>> import motd
 >>> motd.motd('01/01').sortie()
->>> '{"01/01": [{"annee": 1803, "prenom": null, "nom": null, "type": "naissance"}, {"annee": null, "prenom": "Guglielmo", "nom": "LIBRI", "type": "naissance"}, {"annee": 1878, "prenom": "Agner", "nom": "ERLANG", "type":...
+>>> '{"01/01": [{"annee": 1803, "prenom": "Guglielmo", "nom": "LIBRI", "type": "na...
 
 ```
 
@@ -44,8 +44,7 @@ The constructor admits two optional arguments:
 
 >>> import motd
 >>> motd.motd(decalage=1).sortie()
->>> motd.motd(decalage=1).sortie()
-'{"31/12": [{"annee": 1856, "prenom": null, "nom": null, "type": "naissance"}, {"annee": null, "prenom": "William", "nom": "THOMSON", "type":...
+'{"31/12": [{"annee": 1856, "prenom": "William", "nom": "THOMSON", "type": "na...
 
 ```
 
@@ -53,7 +52,7 @@ The constructor admits two optional arguments:
 
 >>> import motd
 >>> motd.motd('01/01', decalage=-2).sortie()
-'{"30/12": [{"annee": 1869, "prenom": "Emilie", "nom": "MARTIN", "type": "naissance"}, {"annee": 1897, "prenom": "Stanis\\u0142aw", "nom": "SAKS", "type": "naissance"}, {"annee": 1691, "prenom": "Robert", "nom": "BOYLE", "type": "mort"}, {"annee": 1932, "prenom": "Eliakim", "nom": "MOORE", "type": "mort"}, {"annee": 1947, "prenom": "Alfred North", "nom": "WHITEHEAD", "type": "mort"}, {"annee": 1956, "prenom": "Heinrich", "nom": "SCHOLZ", "type": "mort"}, {"annee": 1978, "prenom": "Mark Aronovich", "nom": "NAIMARK", "type": "mort"}, {"annee": 1982, "prenom": "Philip", "nom": "HALL", "type": "mort"}]}'
+'{"30/12": [{"annee": 1869, "prenom": "Emilie", "nom": "MARTIN", "type": "na...
 
 ```
 
@@ -61,7 +60,7 @@ The constructor admits two optional arguments:
 
 >>> import motd
 >>> motd.motd(jour='01/01', decalage=-2).sortie()
-'{"30/12": [{"annee": 1869, "prenom": "Emilie", "nom": "MARTIN", "type": "naissance"}, {"annee": 1897,...
+'{"30/12": [{"annee": 1869, "prenom": "Emilie", "nom": "MARTIN", "type": "na...
 
 ```
 
