@@ -25,7 +25,7 @@ Disclaimer: This is not an official package!
 
 The constructor admits two optional arguments:
 
-* `date` specifying date using a string formated as `DD/MM`
+* `jour` specifying date using a string formated as `DD/MM`
   (default is the current system day)
 * `decalage` specifying the number of days before (negative
   integer) or after (positivie integer) `date` value. (default is
@@ -56,6 +56,16 @@ The constructor admits two optional arguments:
 '{"30/12": [{"annee": 1869, "prenom": "Emilie", "nom": "MARTIN", "type": "naissance"}, {"annee": 1897, "prenom": "Stanis\\u0142aw", "nom": "SAKS", "type": "naissance"}, {"annee": 1691, "prenom": "Robert", "nom": "BOYLE", "type": "mort"}, {"annee": 1932, "prenom": "Eliakim", "nom": "MOORE", "type": "mort"}, {"annee": 1947, "prenom": "Alfred North", "nom": "WHITEHEAD", "type": "mort"}, {"annee": 1956, "prenom": "Heinrich", "nom": "SCHOLZ", "type": "mort"}, {"annee": 1978, "prenom": "Mark Aronovich", "nom": "NAIMARK", "type": "mort"}, {"annee": 1982, "prenom": "Philip", "nom": "HALL", "type": "mort"}]}'
 
 ```
+
+``` python3
+
+>>> import motd
+>>> motd.motd(jour='01/01', decalage=-2).sortie()
+'{"30/12": [{"annee": 1869, "prenom": "Emilie", "nom": "MARTIN", "type": "naissance"}, {"annee": 1897,...
+
+```
+
+
 
 ### Usage in standalone app (code below)
 

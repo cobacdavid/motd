@@ -13,6 +13,12 @@ def liste_prenom_nom(chaine):
 class motd():
     def __init__(self, jour=None, decalage=0):
         MyHTMLParser.liste_evenements = []
+        MyHTMLParser.evt_actuel = None
+        MyHTMLParser.lien = 0
+        MyHTMLParser.evenement = 2
+        MyHTMLParser.date = False
+        self.parser = MyHTMLParser()
+        #
         self.jour = jour
         self.decalage = int(decalage)
         self.sortie_json = {}
@@ -28,9 +34,8 @@ class motd():
         return self.page_du_jour.status_code
 
     def _sortie(self):
-        parser = MyHTMLParser()
-        parser.feed(self.page_du_jour.text)
-        self.sortie_json = json.dumps({self.js: parser.liste_evenements})
+        self.parser.feed(self.page_du_jour.text)
+        self.sortie_json = json.dumps({self.js: self.parser.liste_evenements})
 
     def sortie(self):
         return self.sortie_json
@@ -78,11 +83,11 @@ class Evt():
 
 
 class MyHTMLParser(HTMLParser):
-    liste_evenements = []
-    evt_actuel = None
-    lien = 0
-    evenement = 2
-    date = False
+    # liste_evenements = []
+    # evt_actuel = None
+    # lien = 0
+    # evenement = 2
+    # date = False
 
     def handle_starttag(self, tag, attrs):
         if tag == "font":
