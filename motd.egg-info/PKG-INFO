@@ -1,9 +1,7 @@
 Metadata-Version: 2.1
 Name: motd
-Version: 0.1.2
-Summary: Mathematicians Of The Day
-http://mathshistory.st-andrews.ac.uk/Day_files/Year.html
-Not an official package
+Version: 0.1.3
+Summary: Mathematicians Of The Day http://mathshistory.st-andrews.ac.uk/Day_files/Year.html Not an official package
 Home-page: https://twitter.com/david_cobac
 Author: David COBAC
 Author-email: david.cobac@gmail.com

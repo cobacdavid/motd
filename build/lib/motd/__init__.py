@@ -2,7 +2,7 @@
 from .motd import *
 
 
-version = '0.1.1'
+version = '0.1.3'
 
 if __name__ == '__main__':
     import argparse
