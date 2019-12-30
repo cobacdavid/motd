@@ -4,14 +4,14 @@ import json
 from html.parser import HTMLParser
 
 
-def liste_prenom_nom(chaine):
+def _liste_prenom_nom(chaine):
     liste = chaine.split(" ")
     nom = liste[-1]
     return [" ".join(liste[:-1]), nom.upper()]
 
 
 class motd():
-    def __init__(self, jour=None, decalage=0):
+    def __init__(self, day=None, delta=0):
         MyHTMLParser.liste_evenements = []
         MyHTMLParser.evt_actuel = None
         MyHTMLParser.lien = 0
@@ -19,26 +19,13 @@ class motd():
         MyHTMLParser.date = False
         self.parser = MyHTMLParser()
         #
-        self.jour = jour
-        self.decalage = int(decalage)
+        self.jour = day
+        self.decalage = int(delta)
         self.sortie_json = {}
         self.j, self.jr, self.js = self._lejour()
         self.page_du_jour = ""
         self._requete()
         self._sortie()
-
-    def _requete(self):
-        url_le_jour = f"Day{self.jr}.html"
-        site = "http://mathshistory.st-andrews.ac.uk/Day_files/"
-        self.page_du_jour = requests.get(site + url_le_jour)
-        return self.page_du_jour.status_code
-
-    def _sortie(self):
-        self.parser.feed(self.page_du_jour.text)
-        self.sortie_json = json.dumps({self.js: self.parser.liste_evenements})
-
-    def sortie(self):
-        return self.sortie_json
 
     def _lejour(self):
         aujourdhui = datetime.date.today()
@@ -55,28 +42,44 @@ class motd():
         jour_choisi_sortie = jour_choisi.strftime("%d/%m")
         return [jour_choisi, jour_choisi_requete, jour_choisi_sortie]
 
+    def _requete(self):
+        url_le_jour = f"Day{self.jr}.html"
+        site = "http://mathshistory.st-andrews.ac.uk/Day_files/"
+        self.page_du_jour = requests.get(site + url_le_jour)
+        return self.page_du_jour.status_code
+
+    def _sortie(self):
+        self.parser.feed(self.page_du_jour.text)
+        self.sortie_json = json.dumps({self.js: self.parser.liste_evenements})
+
+    def sortie(self):
+        return self.sortie_json
+
+    def out(self):
+        return self.sortie()
+
 
 class Evt():
     id = 0
 
     def __init__(self):
-        self.renseignements = {'annee': None,
-                               'prenom': None,
-                               'nom': None,
-                               'type': None}
+        self.renseignements = {'year': None,
+                               'fname': None,
+                               'name': None,
+                               'event': None}
         self.fourretout = []
 
     def annee(self, annee):
-        self.renseignements['annee'] = int(annee)
+        self.renseignements['year'] = int(annee)
 
     def prenom(self, prenom):
-        self.renseignements['prenom'] = prenom
+        self.renseignements['fname'] = prenom
 
     def nom(self, nom):
-        self.renseignements['nom'] = nom
+        self.renseignements['name'] = nom
 
     def nmd(self, t):
-        self.renseignements['type'] = t
+        self.renseignements['event'] = t
 
     def liste(self):
         return self.renseignements
@@ -123,15 +126,15 @@ class MyHTMLParser(HTMLParser):
                 if data.isdigit():
                     MyHTMLParser.evt_actuel.annee(data)
                 else:
-                    prenom, nom = liste_prenom_nom(data)
+                    prenom, nom = _liste_prenom_nom(data)
                     MyHTMLParser.evt_actuel.prenom(prenom)
                     MyHTMLParser.evt_actuel.nom(nom)
         #
         if MyHTMLParser.lien == 1 and MyHTMLParser.evt_actuel is not None:
             if MyHTMLParser.evenement == 1:
-                evt = "naissance"
+                evt = "birth"
             else:
-                evt = "mort"
+                evt = "death"
             MyHTMLParser.evt_actuel.nmd(evt)
             # fin de l'evt actuel
             MyHTMLParser.liste_evenements.append(

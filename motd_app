@@ -12,24 +12,24 @@ parseur_args = argparse.ArgumentParser(
     http://mathshistory.st-andrews.ac.uk/Day_files/Year.html
     not an official package""")
 
-parseur_args.add_argument('-d', '--date', help='JJ/MM')
-parseur_args.add_argument('decalage',
+parseur_args.add_argument('-d', '--day', help='DD/MM')
+parseur_args.add_argument('delta',
                           nargs='?',
                           default='+0')
 
 args = parseur_args.parse_args()
 
-m = motd.motd(args.date, args.decalage)
+m = motd.motd(args.day, args.delta)
 dico = json.loads(m.sortie())
 for k in dico:
     # print(k)
     for entree in dico[k]:
-        s = str(entree['annee'])
+        s = str(entree['year'])
         s += " "
-        s += entree['type']
+        s += entree['event']
         s += " "
-        s += entree['prenom']
+        s += entree['fname']
         s += " "
-        s += entree['nom']
+        s += entree['name']
         #
         print(s)

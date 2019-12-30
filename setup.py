@@ -5,8 +5,8 @@ with open('README.md') as f:
 
 setup(
     name='motd',
-    version='0.1.3',
-    description='Mathematicians Of The Day http://mathshistory.st-andrews.ac.uk/Day_files/Year.html Not an official package',
+    version='0.2',
+    description='Non-official Mathematicians Of The Day output from website',
     long_description_content_type='text/markdown',
     long_description=long_description,
     url='https://twitter.com/david_cobac',

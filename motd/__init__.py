@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 from .motd import *
 
-
-version = '0.1.3'
+version = '0.2'
 
 if __name__ == '__main__':
     import argparse
@@ -24,12 +23,12 @@ if __name__ == '__main__':
     for k in dico:
         # print(k)
         for entree in dico[k]:
-            s = str(entree['annee'])
+            s = str(entree['year'])
             s += " "
-            s += entree['type']
+            s += entree['evt']
             s += " "
-            s += entree['prenom']
+            s += entree['fname']
             s += " "
-            s += entree['nom']
+            s += entree['name']
             #
             print(s)

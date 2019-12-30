@@ -1,11 +1,14 @@
-# MOTD
+## MOTD
 
-Retrieve famous "Mathematicians Of The Day" from 
+Retrieve famous 'Mathematicians Of The Day' from 
 [http://mathshistory.st-andrews.ac.uk/Day_files/Year.html](http://mathshistory.st-andrews.ac.uk/Day_files/Year.html)
 
 Disclaimer: This package is not supported by the University of St-Andrews. This is not an official package!
 
-## 0.1.2
+Output's format is JSON.
+
+## 0.2
+Modify to English words command and method names
 
 ### Usage as a library
 
@@ -15,8 +18,8 @@ Disclaimer: This package is not supported by the University of St-Andrews. This 
 >>> import motd
 >>> motd.motd()
 <motd.motd.motd object at 0x7fd2675eb550>
->>> motd.motd().sortie()
-'{"30/12": [{"annee": 1869, "prenom": "Emilie", "nom": "MARTIN", "type": "naissance"}, {"annee": 1897, "prenom": "Stanis\\u0142aw", "nom": "SAKS", "type": "naissance"}, {"annee": 1691, "prenom": "Robert", "nom": "BOYLE", "type": "mort"}, {"annee": 1932, "prenom": "Eliakim", "nom": "MOORE", "type": "mort"}, {"annee": 1947, "prenom": "Alfred North", "nom": "WHITEHEAD", "type": "mort"}, {"annee": 1956, "prenom": "Heinrich", "nom": "SCHOLZ", "type": "mort"}, {"annee": 1978, "prenom": "Mark Aronovich", "nom": "NAIMARK", "type": "mort"}, {"annee": 1982, "prenom": "Philip", "nom": "HALL", "type": "mort"}]}'
+>>> motd.motd().out()
+'{"30/12": [{"year": 1869, "fname": "Emilie", "name": "MARTIN", "event": "birth"}, {"year": 1897, "fname": "Stanis\\u0142aw", "name": "SAKS", "event": "birth"}, {"year": 1691, "fname": "Robert", "name": "BOYLE", "event": "death"}, {"year": 1932, "fname": "Eliakim", "name": "MOORE", "event": "death"}, {"year": 1947, "fname": "Alfred North", "name": "WHITEHEAD", "event": "death"}, {"year": 1956, "fname": "Heinrich", "name": "SCHOLZ", "event": "death"}, {"year": 1978, "fname": "Mark Aronovich", "name": "NAIMARK", "event": "death"}, {"year": 1982, "fname": "Philip", "name": "HALL", "event": "death"}]}'
 >>> 
 
 ```
@@ -25,43 +28,40 @@ Disclaimer: This package is not supported by the University of St-Andrews. This 
 
 The constructor admits two optional arguments:
 
-* `jour` specifying date using a string formated as `DD/MM`
+* `day` specifying date using a string formated as `DD/MM`
   (default is the current system day)
-* `decalage` specifying the number of days before (negative
-  integer) or after (positivie integer) `date` value. (default is
+* `delta` specifying the number of days before (negative
+  integer) or after (positivie integer) `day` value. (default is
   0)
 
 
 ``` python3
 
 >>> import motd
->>> motd.motd('01/01').sortie()
->>> '{"01/01": [{"annee": 1803, "prenom": "Guglielmo", "nom": "LIBRI", "type": "na...
+>>> motd.motd('01/01').out()
+'{"01/01": [{"year": 1803, "fname": "Guglielmo", "name": "LIBRI", "event": "birth"}, ...
 
 ```
 
 ``` python3
 
 >>> import motd
->>> motd.motd(decalage=1).sortie()
-'{"31/12": [{"annee": 1856, "prenom": "William", "nom": "THOMSON", "type": "na...
-
+>>> motd.motd(delta=1).out()
+'{"31/12": [{"year": 1856, "fname": "William", "name": "THOMSON", "event": "birth"}, ...
 ```
 
 ``` python3
 
 >>> import motd
->>> motd.motd('01/01', decalage=-2).sortie()
-'{"30/12": [{"annee": 1869, "prenom": "Emilie", "nom": "MARTIN", "type": "na...
-
+>>> motd.motd('01/01', delta=-2).out()
+'{"30/12": [{"year": 1869, "fname": "Emilie", "name": "MARTIN", "event": "birth"}, ...
 ```
 
 ``` python3
 
 >>> import motd
->>> motd.motd(jour='01/01', decalage=-2).sortie()
-'{"30/12": [{"annee": 1869, "prenom": "Emilie", "nom": "MARTIN", "type": "na...
-
+>>> motd.motd(day='01/01', delta=-2).out()
+'{"30/12": [{"year": 1869, "fname": "Emilie", "name": "MARTIN", "event": "birth"}, ...
 ```
 
 
@@ -81,33 +81,45 @@ The constructor admits two optional arguments:
 
 ``` console
 $ motd
-1869 naissance Emilie MARTIN
-1897 naissance Stanisław SAKS
-1691 mort Robert BOYLE
-1932 mort Eliakim MOORE
-1947 mort Alfred North WHITEHEAD
-1956 mort Heinrich SCHOLZ
-1978 mort Mark Aronovich NAIMARK
-1982 mort Philip HALL
-$ motd -d 01/08
-1861 naissance Ivar BENDIXSON
-1881 naissance Otto TOEPLITZ
-1937 naissance Barry JOHNSON
-1955 naissance Bernadette PERRIN-RIOU
-1987 mort Evelyn NELSON
-1992 mort Leslie FOX
-$ motd -d 01/08 -1
-1704 naissance Gabriel CRAMER
-1712 naissance Samuel KÖNIG
-1777 naissance William SPENCE
-1810 naissance Oliver BYRNE
-1826 naissance Ernst MEISSEL
-1863 naissance George MILLER
-1923 naissance Joseph KELLER
-1927 naissance Felix BROWDER
-1726 mort Nicolaus(II) BERNOULLI
-1896 mort Christian WIENER
-1980 mort Pascual JORDAN
+1869 birth Emilie MARTIN
+1897 birth Stanisław SAKS
+1691 death Robert BOYLE
+1932 death Eliakim MOORE
+1947 death Alfred North WHITEHEAD
+1956 death Heinrich SCHOLZ
+1978 death Mark Aronovich NAIMARK
+1982 death Philip HALL
+$ motd -d 01/01
+1803 birth Guglielmo LIBRI
+1878 birth Agner ERLANG
+1886 birth Alexander Barrie GRIEVE
+1894 birth Satyendranath BOSE
+1905 birth Stanisław MAZUR
+1912 birth Boris Vladimirovich GNEDENKO
+1923 birth Daniel GORENSTEIN
+1924 birth Jacques DIXMIER
+1931 birth Sergei Ivanovich ADIAN
+1748 death Johann BERNOULLI
+1787 death Anastácio da CUNHA
+...
+$ motd -d 01/01 -1
+1856 birth William THOMSON
+1872 birth Volodymyr LEVYTSKY
+1896 birth Carl SIEGEL
+1916 birth Douglas NORTHCOTT
+1937 birth Vladimir MAZ'YA
+1945 birth Leonard ADLEMAN
+1952 birth Vaughan JONES
+1610 death Ludolph Van CEULEN
+1659 death János APÁCZAI
+1679 death Giovanni Alfonso BORELLI
+1719 death John FLAMSTEED
+1894 death Thomas STIELTJES
+1912 death Robert FERGUSON
+1944 death Nikolai Evgrafovich KOCHIN
+1956 death Edwin P ADAMS
+1962 death Charles Galton DARWIN
+1982 death Kurt FRIEDRICHS
 
 ```
 
@@ -135,25 +147,25 @@ parseur_args = argparse.ArgumentParser(
     http://mathshistory.st-andrews.ac.uk/Day_files/Year.html
     not an official package""")
 
-parseur_args.add_argument('-d', '--date', help='JJ/MM')
-parseur_args.add_argument('decalage',
+parseur_args.add_argument('-d', '--day', help='DD/MM')
+parseur_args.add_argument('delta',
                           nargs='?',
                           default='+0')
 
 args = parseur_args.parse_args()
 
-m = motd.motd(args.date, args.decalage)
+m = motd.motd(args.day, args.delta)
 dico = json.loads(m.sortie())
 for k in dico:
     # print(k)
     for entree in dico[k]:
-        s = str(entree['annee'])
+        s = str(entree['year'])
         s += " "
-        s += entree['type']
+        s += entree['event']
         s += " "
-        s += entree['prenom']
+        s += entree['fname']
         s += " "
-        s += entree['nom']
+        s += entree['name']
         #
         print(s)
 
