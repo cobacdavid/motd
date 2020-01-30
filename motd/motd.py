@@ -93,10 +93,10 @@ class MyHTMLParser(HTMLParser):
     # date = False
 
     def handle_starttag(self, tag, attrs):
-        if tag == "font":
-            if attrs[0][1] == "green":
+        if tag == "span":
+            if attrs[0][1] == "color:green;":
                 MyHTMLParser.evenement = 1
-            elif attrs[0][1] == "purple":
+            elif attrs[0][1] == "color:purple;":
                 MyHTMLParser.evenement = 0
             else:
                 MyHTMLParser.evenement = 2
