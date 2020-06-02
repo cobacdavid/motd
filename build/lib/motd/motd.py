@@ -2,7 +2,10 @@ import requests
 import datetime
 import json
 from html.parser import HTMLParser
+from urllib3.exceptions import InsecureRequestWarning
 
+
+requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 
 def _liste_prenom_nom(chaine):
     liste = chaine.split(" ")
@@ -15,7 +18,7 @@ class motd():
         MyHTMLParser.liste_evenements = []
         MyHTMLParser.evt_actuel = None
         MyHTMLParser.lien = 0
-        MyHTMLParser.evenement = 2
+        MyHTMLParser.evenement = False
         MyHTMLParser.date = False
         self.parser = MyHTMLParser()
         #
@@ -38,14 +41,17 @@ class motd():
             jour_reference = datetime.date(annee, date[1], date[0])
         #
         jour_choisi = jour_reference + datetime.timedelta(days=self.decalage)
-        jour_choisi_requete = jour_choisi.strftime("%m%d").lstrip('0')
+        jour_choisi_requete = jour_choisi.strftime("%m-%d")
         jour_choisi_sortie = jour_choisi.strftime("%d/%m")
         return [jour_choisi, jour_choisi_requete, jour_choisi_sortie]
 
     def _requete(self):
-        url_le_jour = f"Day{self.jr}.html"
-        site = "http://mathshistory.st-andrews.ac.uk/Day_files/"
-        self.page_du_jour = requests.get(site + url_le_jour)
+        url_le_jour = f"oftheday-{self.jr}/"
+        site = "https://mathshistory.st-andrews.ac.uk/OfTheDay/"
+        self.page_du_jour = requests.get(site + url_le_jour,
+                                         verify=False)
+        # on force l'encodage car mal détecté
+        self.page_du_jour.encoding = 'utf-8'
         return self.page_du_jour.status_code
 
     def _sortie(self):
@@ -91,53 +97,48 @@ class MyHTMLParser(HTMLParser):
     # lien = 0
     # evenement = 2
     # date = False
+    recuperation_data = False
 
     def handle_starttag(self, tag, attrs):
-        if tag == "span":
-            if attrs[0][1] == "color:green;":
-                MyHTMLParser.evenement = 1
-            elif attrs[0][1] == "color:purple;":
-                MyHTMLParser.evenement = 0
-            else:
-                MyHTMLParser.evenement = 2
-            # on n'a pas encore rencontré <p>
-            MyHTMLParser.date = False
-        if tag == "p":
-            MyHTMLParser.date = True
-        if tag == "a":
-            for a in attrs:
-                if a[0] == "onclick":
-                    MyHTMLParser.lien = 1
+        if tag == "div" and attrs[0][1] == "col-md-6":
+            MyHTMLParser.evenement = True
+        #
+        if (tag == "li" or tag == "a") and MyHTMLParser.evenement:
+            MyHTMLParser.recuperation_data = True
+        else:
+            MyHTMLParser.recuperation_data = False
 
     def handle_endtag(self, tag):
-        pass
+        if tag == "div" and MyHTMLParser.evenement:
+            MyHTMLParser.evenement = False
+            MyHTMLParser.naissance = False
+            MyHTMLParser.deces = False
 
     def handle_data(self, data):
-        data = data.strip()
-        # la date est de la forme : "AAAA :"
-        data = data.strip(" :")
-        if MyHTMLParser.evenement != 2:
-            if MyHTMLParser.date and data != "":
-                # si None, on a fini l'événement précédent
+        if MyHTMLParser.evenement:
+            data = data.strip()
+            if data == "Born:":
+                MyHTMLParser.naissance = True
+            elif data == "Died:":
+                MyHTMLParser.deces = True
+            #
+            if MyHTMLParser.recuperation_data and \
+               "poster" not in data and "(" not in data and \
+               ")" not in data and data.strip("\n") != "":
+                data = data.strip(":")
                 if MyHTMLParser.evt_actuel is None:
                     MyHTMLParser.evt_actuel = Evt()
-                # détermination du champ à ajouter
-                # date ou prenom/nom
                 if data.isdigit():
                     MyHTMLParser.evt_actuel.annee(data)
                 else:
                     prenom, nom = _liste_prenom_nom(data)
                     MyHTMLParser.evt_actuel.prenom(prenom)
                     MyHTMLParser.evt_actuel.nom(nom)
-        #
-        if MyHTMLParser.lien == 1 and MyHTMLParser.evt_actuel is not None:
-            if MyHTMLParser.evenement == 1:
-                evt = "birth"
-            else:
-                evt = "death"
-            MyHTMLParser.evt_actuel.nmd(evt)
-            # fin de l'evt actuel
-            MyHTMLParser.liste_evenements.append(
-                MyHTMLParser.evt_actuel.liste())
-            MyHTMLParser.evt_actuel = None
-            MyHTMLParser.lien = 0
+                    if MyHTMLParser.naissance:
+                        evt = "birth"
+                    else:
+                        evt = "death"
+                    MyHTMLParser.evt_actuel.nmd(evt)
+                    MyHTMLParser.liste_evenements.append(
+                        MyHTMLParser.evt_actuel.liste())
+                    MyHTMLParser.evt_actuel = None
