@@ -5,7 +5,7 @@ with open('README.md') as f:
 
 setup(
     name='motd',
-    version='0.2.2',
+    version='0.3.0',
     description='Non-official Mathematicians Of The Day output from website',
     long_description_content_type='text/markdown',
     long_description=long_description,

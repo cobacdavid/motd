@@ -7,6 +7,7 @@ from urllib3.exceptions import InsecureRequestWarning
 
 requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 
+
 def _liste_prenom_nom(chaine):
     liste = chaine.split(" ")
     nom = liste[-1]
@@ -20,6 +21,9 @@ class motd():
         MyHTMLParser.lien = 0
         MyHTMLParser.evenement = False
         MyHTMLParser.date = False
+        MyHTMLParser.quotation_body = False
+        MyHTMLParser.quotation_author = False
+        MyHTMLParser.dico_quotation = {"quotation": "", "author": ""}
         self.parser = MyHTMLParser()
         #
         self.jour = day
@@ -56,7 +60,9 @@ class motd():
 
     def _sortie(self):
         self.parser.feed(self.page_du_jour.text)
-        self.sortie_json = json.dumps({self.js: self.parser.liste_evenements})
+        dico_sortie = {self.js: self.parser.liste_evenements}
+        dico_sortie.update({'qotd': self.parser.dico_quotation})
+        self.sortie_json = json.dumps(dico_sortie)
 
     def sortie(self):
         return self.sortie_json
@@ -102,8 +108,16 @@ class MyHTMLParser(HTMLParser):
     def handle_starttag(self, tag, attrs):
         if tag == "div" and attrs[0][1] == "col-md-6":
             MyHTMLParser.evenement = True
+        elif tag == "div" and attrs[0][1] == "blockquote-body":
+            MyHTMLParser.quotation_body = True
+        elif tag == "div" and attrs[0][1] == "col-md-12":
+            MyHTMLParser.quotation_author = True
+            MyHTMLParser.quotation_flag_author = False
         #
-        if (tag == "li" or tag == "a") and MyHTMLParser.evenement:
+        # test sur attrs pour éviter de parser l'étoile à côté du
+        # nom menant à la page de l'individu
+        if (tag == "li" or (tag == "a" and len(attrs) == 1)) \
+            and MyHTMLParser.evenement:
             MyHTMLParser.recuperation_data = True
         else:
             MyHTMLParser.recuperation_data = False
@@ -113,6 +127,10 @@ class MyHTMLParser(HTMLParser):
             MyHTMLParser.evenement = False
             MyHTMLParser.naissance = False
             MyHTMLParser.deces = False
+        elif tag == "div" and MyHTMLParser.quotation_body:
+            MyHTMLParser.quotation_body = False
+        elif tag == "footer" and MyHTMLParser.quotation_author:
+            MyHTMLParser.quotation_author = False
 
     def handle_data(self, data):
         if MyHTMLParser.evenement:
@@ -142,3 +160,13 @@ class MyHTMLParser(HTMLParser):
                     MyHTMLParser.liste_evenements.append(
                         MyHTMLParser.evt_actuel.liste())
                     MyHTMLParser.evt_actuel = None
+        elif MyHTMLParser.quotation_body:
+            data = data.strip()
+            MyHTMLParser.dico_quotation["quotation"] += data
+        elif MyHTMLParser.quotation_author:
+            data = data.strip()
+            if "From" in data:
+                MyHTMLParser.quotation_flag_author = True
+            elif MyHTMLParser.quotation_flag_author:
+                MyHTMLParser.dico_quotation["author"] = data
+                MyHTMLParser.quotation_flag_author = False

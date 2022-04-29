@@ -22,14 +22,11 @@ args = parseur_args.parse_args()
 m = motd.motd(args.day, args.delta)
 dico = json.loads(m.sortie())
 for k in dico:
-    # print(k)
-    for entree in dico[k]:
-        s = str(entree['year'])
-        s += " "
-        s += entree['event']
-        s += " "
-        s += entree['fname']
-        s += " "
-        s += entree['name']
-        #
-        print(s)
+    if k != "qotd":
+        for entree in dico[k]:
+            s = f"{entree['year']} {entree['event']}" \
+            f" {entree['fname']} {entree['name']}"
+            print(s)
+
+print(f"\nQuote Of The Day from {dico['qotd']['author']}")
+print(dico['qotd']['quotation'])
